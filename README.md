@@ -30,7 +30,7 @@ Meteor.user().profile.fullName
 ````
 
 ====================================================
-#### EventType API
+#### HipaaLog.EventType API
 
 The following event types are provided by the Hipaa Audit Log package.
 
