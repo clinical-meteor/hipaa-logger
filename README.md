@@ -19,9 +19,29 @@ The ``clinical:hipaa-logger`` package is responsible for creating the ``HipaaLog
 
 ![HipaaLog Architecture](https://raw.githubusercontent.com/clinical-meteor/hipaa-logger/master/docs/HIPAA%20Audit%20Log%20-%20Utility%20Configuration%20-%20Page%204.png)
 
-
 ====================================================
-#### API Requirements
+#### Code Sample
+
+In typical situations, HIPAA events will occur as parts of other functions, usually related to adding, viewing, or removing data.
+
+````js
+Template.samplePage.events({
+  'click #saveButton': function (evt, tmpl) {
+    var self = this;
+
+    Vitals.update({_id: this._id},{$set:{
+      stared: true
+    }}, function(error, result){
+      if(error){
+        HipaaLogger.logEvent("error", Meteor.userId(), Meteor.user().profile.fullName, "Vitals", null, null, null, error);
+      }
+      if(result){
+        HipaaLogger.logEvent("create", Meteor.userId(), Meteor.user().profile.fullName, "Vitals", null, null, null, null);
+      }
+    });
+  }
+});
+````
 
 This package depends on the ``acounts-base`` package, and generally relies on the user profile having a ``fullName`` field. If you don't have a field that stores the entire user's name, it's recommended that you create one; or at least create a helper function that will generate it.
 
@@ -67,29 +87,7 @@ HipaaLogger.logEvent(hipaaEvent);
 
 
 
-====================================================
-#### Code Sample
 
-In typical situations, HIPAA events will occur as parts of other functions, usually related to adding, viewing, or removing data.
-
-````js
-Template.samplePage.events({
-  'click #saveButton': function (evt, tmpl) {
-    var self = this;
-
-    Vitals.update({_id: this._id},{$set:{
-      stared: true
-    }}, function(error, result){
-      if(error){
-        HipaaLogger.logEvent("error", Meteor.userId(), Meteor.user().profile.fullName, "Vitals", null, null, null, error);
-      }
-      if(result){
-        HipaaLogger.logEvent("create", Meteor.userId(), Meteor.user().profile.fullName, "Vitals", null, null, null, null);
-      }
-    });
-  }
-});
-````
 
 
 ------------------------
