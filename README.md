@@ -19,6 +19,42 @@ The ``clinical:hipaa-logger`` package is responsible for creating the ``HipaaLog
 
 ![HipaaLog Architecture](https://raw.githubusercontent.com/clinical-meteor/hipaa-logger/master/docs/HIPAA%20Audit%20Log%20-%20Utility%20Configuration%20-%20Page%204.png)
 
+
+====================================================
+#### Basic Example
+
+The HipaaLogger object accepts a HipaaEvent object
+````js
+var hipaaEvent = {
+  eventType: "modify",
+  userId: Meteor.userId(),
+  userName: Meteor.user().profile.fullName,
+  collectionName: "Medications",
+  recordId: Random.id(),
+  patientId: Session.get('currentPatientId'),
+  patientName: Session.get('currentPatientName')
+};
+HipaaLogger.logEvent(hipaaEvent);
+````
+
+====================================================
+#### HipaaLog.HipaaEvent.EventType 
+
+The following event types are recognized:
+
+````
+init
+access
+create
+modify
+clone
+delete
+denied
+viewed
+publish
+unpublish
+````
+
 ====================================================
 #### Code Sample
 
@@ -48,45 +84,6 @@ This package depends on the ``acounts-base`` package, and generally relies on th
 ````js
 Meteor.user().profile.fullName
 ````
-
-====================================================
-#### HipaaLog.EventType API
-
-The following event types are provided by the Hipaa Audit Log package.
-
-````
-init
-access
-create
-modify
-clone
-delete
-denied
-viewed
-publish
-unpublish
-````
-
-====================================================
-#### Core API - Methods
-
-````js
-HipaaLogger.logEvent(eventType, userId, userName, collectionName, recordId, patientId, patientName, message);
-
-var hipaaEvent = {
-  eventType: "modified",
-  userId: Meteor.userId(),
-  userName: Meteor.user().profile.fullName,
-  collectionName: "Medications",
-  recordId: Random.id(),
-  patientId: Session.get('currentPatientId'),
-  patientName: Session.get('currentPatientName')
-};
-HipaaLogger.logEvent(hipaaEvent);
-````
-
-
-
 
 
 
