@@ -12,9 +12,12 @@ meteor add clinical:hipaa-logger
 
 
 ====================================================
-#### Collections
+#### Architecture
 
-At installation, a Mongo collection is created named 'Hipaa', which users can find and insert into, but cannot update or remove records from.  This makes it an audit log that people can refer to later to find out what clinically relevant privacy events have occurred.
+The ``clinical:hipaa-logger`` package is responsible for creating the ``HipaaLog`` collection, and writing entries to it. If you wish to display contents of the audit log, use the [``clinical:hipaa-audit-log``](https://github.com/clinical-meteor/clinical-hipaa-audit-log) package, and either add the ``{{> hipaaAuditLog}}`` template to your app, or connect a secondary app to the HipaaLog collection.  
+
+
+![HipaaLog Architecture](https://raw.githubusercontent.com/clinical-meteor/hipaa-logger/master/docs/HIPAA%20Audit%20Log%20-%20Utility%20Configuration%20-%20Page%204.png)
 
 
 ====================================================
