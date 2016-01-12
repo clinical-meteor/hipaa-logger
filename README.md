@@ -56,9 +56,9 @@ unpublish
 ````
 
 ====================================================
-#### Code Sample
+#### Callback Example
 
-In typical situations, HIPAA events will occur as parts of other functions, usually related to adding, viewing, or removing data.
+In typical situations, HIPAA events will occur as parts of other functions, usually related to adding, viewing, or removing data.  Attaching the HipaaLoger to callbacks and hooks is a best practice.
 
 ````js
 Template.samplePage.events({
@@ -79,11 +79,6 @@ Template.samplePage.events({
 });
 ````
 
-This package depends on the ``acounts-base`` package, and generally relies on the user profile having a ``fullName`` field. If you don't have a field that stores the entire user's name, it's recommended that you create one; or at least create a helper function that will generate it.
-
-````js
-Meteor.user().profile.fullName
-````
 
 
 
