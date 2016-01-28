@@ -79,8 +79,10 @@ Template.samplePage.events({
 });
 ````
 
+===========================
+#### Contributors  
 
-
+This package was made possible through generous support from [Artaic Health](http://artaichealth.com/) and their NIH Small Business Innovation Research Grant.
 
 ===========================
 #### Licensing  
