@@ -38,7 +38,7 @@ HipaaLogger.logEvent(hipaaEvent);
 ````
 
 ====================================================
-#### HipaaLog.HipaaEvent.EventType 
+#### HipaaLog.HipaaEvent.EventType
 
 The following event types are recognized:
 
@@ -82,7 +82,7 @@ Template.samplePage.events({
 
 
 
-------------------------
-### License
+===========================
+#### Licensing  
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
