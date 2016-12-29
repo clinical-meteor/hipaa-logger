@@ -2,11 +2,17 @@
 
 Meteor.methods({
   logEvent: function(payload){
-    // console.log('payload', payload);
-    return HipaaLog.insert(payload);
+    check(payload, Object);
+
+    return HipaaLog.insert(payload, function(error, result){
+      if (error) {
+        console.log("error", error);        
+      }
+    });
   },
   logHipaaEvent:function(hipaaEvent){
-    // console.log('logEventObject', hipaaEvent);
+    check(hipaaEvent, Object);
+
     hipaaEvent.timestamp = new Date();
 
     var hipaaRecordId = HipaaLog.insert(hipaaEvent);
