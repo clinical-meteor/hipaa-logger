@@ -28,7 +28,7 @@ The HipaaLogger object accepts a HipaaEvent object
 var hipaaEvent = {
   eventType: "modify",
   userId: Meteor.userId(),
-  userName: Meteor.user().profile.fullName,
+  userName: Meteor.user().fullName(),
   collectionName: "Medications",
   recordId: Random.id(),
   patientId: Session.get('currentPatientId'),
