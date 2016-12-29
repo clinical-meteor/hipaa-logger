@@ -25,16 +25,15 @@ The ``clinical:hipaa-logger`` package is responsible for creating the ``HipaaLog
 
 The HipaaLogger object accepts a HipaaEvent object
 ````js
-var hipaaEvent = {
-  eventType: "modify",
+HipaaLogger.logEvent({
+  eventType: "update",
   userId: Meteor.userId(),
   userName: Meteor.user().fullName(),
   collectionName: "Medications",
   recordId: Random.id(),
   patientId: Session.get('currentPatientId'),
   patientName: Session.get('currentPatientName')
-};
-HipaaLogger.logEvent(hipaaEvent);
+});
 ````
 
 ====================================================
@@ -44,13 +43,11 @@ The following event types are recognized:
 
 ````
 init
-access
+read
 create
-modify
-clone
+update
 delete
 denied
-viewed
 publish
 unpublish
 ````
