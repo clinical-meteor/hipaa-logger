@@ -1,6 +1,6 @@
 Package.describe({
   name: 'clinical:hipaa-logger',
-  version: '1.1.1',
+  version: '1.2.0',
   summary: 'Write HIPAA events to a logging collection.  No UI provided.',
   git: 'http://github.com/clinical-meteor/hipaa-logger',
   documentation: 'README.md'
