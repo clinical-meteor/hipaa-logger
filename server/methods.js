@@ -4,56 +4,95 @@ Meteor.methods({
   logEvent: function(payload){
     check(payload, Object);
 
-    var newAuditId;
+    process.env.DEBUG && console.log('HipaaLogger.logEvent()', payload)
+    return Meteor.call('logHipaaEvent', payload)
+  },
+  logHipaaEvent:function(hipaaEvent){
+    check(hipaaEvent, Object);
 
-    if(Package['clinical:hl7-resource-audit-event']){
-      newAuditId = AuditEvents.insert(payload, function(error, result){
-        if (error) {
-          console.log("error", error);        
-        }
-      });
-    } else {
-      newAuditId = HipaaLog.insert(payload, function(error, result){
-        if (error) {
-          console.log("error", error);        
-        }
-      });  
+    if(process.env.DEBUG){
+      console.log("Received an event to log: ", hipaaEvent);
     }
+
+    // let auditEventValidator = AuditEventSchema.newContext();
+    // auditEventValidator.validate(hipaaEvent)
+
+    // is the official FHIR compliant infrastructure installed?
+    // if(auditEventValidator.isValid() === false){
+      var newAuditEvent = { 
+        "resourceType" : "AuditEvent",
+        "type" : { 
+          'code': hipaaEvent.collectionName,
+          'display': hipaaEvent.collectionName
+         }, 
+        "action" : "System Initialization", 
+        "recorded" : new Date(), 
+        "outcome" : "Success", 
+        "outcomeDesc" : "System Initialized", 
+        "agent" : [{ 
+          "altId" : hipaaEvent.userId, 
+          "name" : hipaaEvent.userName, 
+          "requestor" : false
+        }],
+        "source" : { 
+          "site" : hipaaEvent.collectionName,
+          "identifier": {
+            "value": Meteor.absoluteUrl(),
+
+          }
+        },
+        "entity": [{
+          "reference": {
+            "reference": hipaaEvent.recordId
+          }
+        }]
+      }
+    // } 
+
+    if(hipaaEvent.eventType){
+      newAuditEvent.action = hipaaEvent.eventType;
+    }
+    if(hipaaEvent.outcome){
+      newAuditEvent.outcome = hipaaEvent.outcome;
+    }
+    if(hipaaEvent.outcomeDesc){
+      newAuditEvent.outcomeDesc = hipaaEvent.outcomeDesc;
+    }
+
+    // console.log('IsValid: ', auditEventValidator.isValid())
+    // console.log('ValidationErrors: ', auditEventValidator.validationErrors());
+
+    let newAuditId = false;
+    newAuditId = Meteor.call('logAuditEvent', newAuditEvent)
 
     if(process.env.DEBUG){
       console.log("Just logged an event: ", newAuditId);
     }
     return newAuditId;
   },
-  logHipaaEvent:function(hipaaEvent){
-    check(hipaaEvent, Object);
+  logAuditEvent:function(fhirAuditEvent){
+    check(fhirAuditEvent, Object);
 
-    if(process.env.TRACE){
-      console.log("Received an event to log: ", hipaaEvent);
-      console.log('Is valid AuditEvent:  ', AuditEventSchema.validate(hipaaEvent))      
+    if(process.env.DEBUG){
+      console.log("Logging a FHIR Audit Event: ", fhirAuditEvent);
     }
 
-    var newAuditId;
-    // is the official FHIR compliant infrastructure installed?
-    if(AuditEventSchema.validate(hipaaEvent)){
+    let newAuditId = false;
 
-      newAuditId = AuditEvents.insert(hipaaEvent, function(error, result){
-        if (error) {
-          console.log("error", error);        
-        }
-      });
-    } else {
-      hipaaEvent.timestamp = new Date();
-      newAuditId = HipaaLog.insert(hipaaEvent, function(error, result){
+    let auditEventValidator = AuditEventSchema.newContext();
+    auditEventValidator.validate(fhirAuditEvent)
+
+    console.log('IsValid: ', auditEventValidator.isValid())
+    console.log('ValidationErrors: ', auditEventValidator.validationErrors());
+
+    if(auditEventValidator.isValid()){
+      newAuditId = AuditEvents.insert(fhirAuditEvent, function(error, result){
         if (error) {
           console.log("error", error);        
         }
       });  
     }
 
-    if(process.env.DEBUG){
-      console.log("Just logged an event: ", newAuditId);
-    }
     return newAuditId;
-  }
+  }  
 })
