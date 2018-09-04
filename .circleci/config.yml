@@ -118,7 +118,7 @@ jobs:
     - run: cd ../baseline && meteor add dispatch:mocha practicalmeteor:chai
     - run: cd ../baseline && meteor add clinical:hipaa-logger
     - run: cd ../baseline && mkdir imports 
-    - run: cp tests/HipaaLoggerTests.tests.js ../baseline/imports/
+    - run: cp tests/HipaaLogger.tests.js ../baseline/imports/
 
 
     #- run the app
