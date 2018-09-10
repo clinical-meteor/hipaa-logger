@@ -1,6 +1,6 @@
 Package.describe({
   name: 'clinical:hipaa-logger',
-  version: '2.0.3',
+  version: '2.0.4',
   summary: 'Write HIPAA events to a logging collection.  No UI provided.',
   git: 'http://github.com/clinical-meteor/hipaa-logger',
   documentation: 'README.md'
@@ -12,7 +12,7 @@ Package.onUse(function(api) {
   api.use('meteor-platform');
   api.use('ecmascript@0.9.0');
 
-  api.use('clinical:hl7-resource-audit-event@1.6.2');
+  api.use('clinical:hl7-resource-audit-event@1.6.5');
 
   api.addFiles('lib/HipaaLog.js');
   api.addFiles('lib/HipaaLogger.js');
