@@ -1,4 +1,5 @@
 import { AuditEventSchema } from 'meteor/clinical:hl7-resource-audit-event'
+import { get } from 'lodash';
 
 Meteor.methods({
   logEvent: function(payload){
@@ -17,46 +18,28 @@ Meteor.methods({
     // let auditEventValidator = AuditEventSchema.newContext();
     // auditEventValidator.validate(hipaaEvent)
 
-    // is the official FHIR compliant infrastructure installed?
-    // if(auditEventValidator.isValid() === false){
-      var newAuditEvent = { 
-        "resourceType" : "AuditEvent",
-        "type" : { 
-          'code': hipaaEvent.collectionName,
-          'display': hipaaEvent.collectionName
-         }, 
-        "action" : "System Initialization", 
-        "recorded" : new Date(), 
-        "outcome" : "Success", 
-        "outcomeDesc" : "System Initialized", 
-        "agent" : [{ 
-          "altId" : hipaaEvent.userId, 
-          "name" : hipaaEvent.userName, 
-          "requestor" : false
-        }],
-        "source" : { 
-          "site" : hipaaEvent.collectionName,
-          "identifier": {
-            "value": Meteor.absoluteUrl(),
-
-          }
-        },
-        "entity": [{
-          "reference": {
-            "reference": hipaaEvent.recordId
-          }
-        }]
-      }
-    // } 
-
-    if(hipaaEvent.eventType){
-      newAuditEvent.action = hipaaEvent.eventType;
-    }
-    if(hipaaEvent.outcome){
-      newAuditEvent.outcome = hipaaEvent.outcome;
-    }
-    if(hipaaEvent.outcomeDesc){
-      newAuditEvent.outcomeDesc = hipaaEvent.outcomeDesc;
+    var newAuditEvent = { 
+      "resourceType" : "AuditEvent",
+      "type" : { 
+        'code': get(hipaaEvent, 'collectionName', ''),
+        'display': get(hipaaEvent, 'collectionName', '')
+        }, 
+      "action" : get(hipaaEvent, 'action', get(hipaaEvent, 'eventType', '')),
+      "recorded" : new Date(), 
+      "outcome" : get(hipaaEvent, 'outcome', "Success"),
+      "outcomeDesc" : get(hipaaEvent, 'outcomeDesc'),
+      "agent" : [get(hipaaEvent, 'agent[0]', null)],
+      "source" : { 
+        "site" : Meteor.absoluteUrl(),
+        "identifier": {
+          "value": get(hipaaEvent, 'collectionName', '')
+        }
+      },
+      "entity": [{
+        "reference": {
+          "reference": get(hipaaEvent, 'recordId', ''),
+        }
+      }]
     }
 
     // console.log('IsValid: ', auditEventValidator.isValid())
@@ -84,8 +67,11 @@ Meteor.methods({
 
     console.log('IsValid: ', auditEventValidator.isValid())
     console.log('ValidationErrors: ', auditEventValidator.validationErrors());
+    console.log('Meteor.settings.public.modules.fhir.AuditEvents.enabled: ', get(Meteor, 'settings.public.modules.fhir.AuditEvents.enabled'));
 
-    if(auditEventValidator.isValid()){
+    if(auditEventValidator.isValid() && get(Meteor, 'settings.public.modules.fhir.AuditEvents.enabled')){
+
+      console.log('Adding event to AuditLog.');
       newAuditId = AuditEvents.insert(fhirAuditEvent, function(error, result){
         if (error) {
           console.log("error", error);        

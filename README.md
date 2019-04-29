@@ -23,8 +23,9 @@ The ``clinical:hipaa-logger`` package is responsible for creating the ``HipaaLog
 ====================================================
 #### Basic Example
 
-The HipaaLogger object accepts a HipaaEvent object
+The HipaaLogger object accepts 
 ````js
+// Shorthand method for simplicity
 HipaaLogger.logEvent({
   eventType: "update",
   userId: Meteor.userId(),
@@ -34,6 +35,37 @@ HipaaLogger.logEvent({
   patientId: Session.get('currentPatientId'),
   patientName: Session.get('currentPatientName')
 });
+
+
+// FHIR Audit Event
+HipaaLogger.logAuditEvent({ 
+    "resourceType" : "AuditEvent",
+    "type" : { 
+      'code': 'Login',
+      'display': 'Login'
+      }, 
+    "action" : 'Login',
+    "recorded" : new Date(), 
+    "outcome" : "Success",
+    "outcomeDesc" : 'User logged in.',
+    "agent" : [{ 
+      "altId" : Meteor.userId(),
+      "name" : Meteor.user() ? Meteor.user().fullName() : '',
+      "requestor" : false
+    }],
+    "source" : { 
+      "site" : Meteor.absoluteUrl(),
+      "identifier": {
+        "value": Meteor.absoluteUrl(),
+
+      }
+    },
+    "entity": [{
+      "reference": {
+        "reference": get(hipaaEvent, 'recordId', ''),
+      }
+    }]
+  })
 ````
 
 ====================================================
