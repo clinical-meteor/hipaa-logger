@@ -65,9 +65,11 @@ Meteor.methods({
     let auditEventValidator = AuditEventSchema.newContext();
     auditEventValidator.validate(fhirAuditEvent)
 
-    console.log('IsValid: ', auditEventValidator.isValid())
-    console.log('ValidationErrors: ', auditEventValidator.validationErrors());
-    console.log('Meteor.settings.public.modules.fhir.AuditEvents.enabled: ', get(Meteor, 'settings.public.modules.fhir.AuditEvents.enabled'));
+    if(process.env.DEBUG){
+      console.log('IsValid: ', auditEventValidator.isValid())
+      console.log('ValidationErrors: ', auditEventValidator.validationErrors());
+      console.log('Meteor.settings.public.modules.fhir.AuditEvents.enabled: ', get(Meteor, 'settings.public.modules.fhir.AuditEvents.enabled'));  
+    }
 
     if(auditEventValidator.isValid() && get(Meteor, 'settings.public.modules.fhir.AuditEvents.enabled')){
 
