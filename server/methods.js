@@ -1,4 +1,6 @@
-import { AuditEventSchema } from 'meteor/clinical:hl7-resource-audit-event'
+import { AuditEventSchema } from 'meteor/clinical:hl7-fhir-data-infrastructure';
+import { check } from 'meteor/check';
+import { Meteor } from 'meteor/meteor';
 import { get } from 'lodash';
 
 Meteor.methods({
